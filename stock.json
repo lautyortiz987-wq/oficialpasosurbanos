@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "name": "asd",
+    "price": "44444",
+    "img": "https://media.discordapp.net/attachments/1408281269602746439/1454947305055850537/0d2a77ac-2708-4f70-90a8-e2ca1baf0ba8.png?ex=6952f0c5&is=69519f45&hm=46fcd19ca58cc4d8b30f8f414bc5365fd8f32b7c3a9964d46d408bf103e23ea4&=&format=webp&quality=lossless&width=715&height=954",
+    "sizes": [
+      "37",
+      "38",
+      "43"
+    ]
+  }
+]
