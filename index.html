@@ -368,14 +368,15 @@
     <a href="https://wa.me/5491156474987" target="_blank" class="whatsapp-float"><i class="fa-brands fa-whatsapp"></i></a>
 
 <script type="module">
-    // --- CONFIGURACIÓN ---
-    const CONFIG = {
+    
+   const CONFIG = {
         OWNER: 'lautyortiz987-wq',
         REPO: 'oficialpasosurbanos',
-        PATH: 'stock.json', // <--- ESTA COMA ES VITAL
-        TOKEN: 'ghp_keBIVhVuobW5let85A1kbZWdAmYA1y15yV1T' 
+        PATH: 'stock.json',
+        // Dejamos esto vacío para que GitHub NO te lo desactive
+        TOKEN: sessionStorage.getItem('gh_token') || "" 
     };
-
+    
     const state = { 
         products: [],
         selectedProduct: null,
@@ -634,6 +635,7 @@
     
 </body>
 </html>
+
 
 
 
