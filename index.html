@@ -367,196 +367,247 @@
     <a href="https://www.instagram.com/passos.urbanoss/" target="_blank" class="ig-float"><i class="fa-brands fa-instagram"></i></a>
     <a href="https://wa.me/5491156474987" target="_blank" class="whatsapp-float"><i class="fa-brands fa-whatsapp"></i></a>
 
-    <script type="module">
-        const state = { 
-            products: [],
-            selectedProduct: null,
-            selectedSize: null,
-            isLightMode: false
-        };
+  <script type="module">
+    // --- CONFIGURACIÓN DE GITHUB ---
+    const CONFIG = {
+        OWNER: 'lautyortiz987-wq',
+        REPO: 'oficialpasosurbanos',
+        PATH: 'stock.json',
+        TOKEN: sessionStorage.getItem('gh_token') || ""
+    };
 
-        window.UI = {
-            openModal: (id) => {
-                document.getElementById('modal-overlay').classList.add('active');
-                document.getElementById(id).classList.add('active');
-            },
-            close: () => {
-                document.querySelectorAll('.modal-container, .overlay').forEach(el => el.classList.remove('active'));
-            },
-            notify: (msg) => {
-                const t = document.getElementById('toast');
-                t.innerText = msg; t.classList.add('show');
-                setTimeout(() => t.classList.remove('show'), 3000);
-            },
-            toggleTheme: () => {
-                state.isLightMode = !state.isLightMode;
-                document.body.classList.toggle('light-mode', state.isLightMode);
-                UI.notify(state.isLightMode ? 'Modo Claro Activo' : 'Modo Oscuro Activo');
-            },
-            initZoom: (container) => {
-                if(!container) return;
-                const img = container.querySelector('img');
-                container.onmousemove = (e) => {
-                    const rect = container.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    img.style.transformOrigin = `${x}px ${y}px`;
-                    img.style.transform = "scale(2.2)";
-                };
-                container.onmouseleave = () => img.style.transform = "scale(1)";
-            },
-            openCheckout: (index) => {
-                const p = state.products[index];
-                state.selectedProduct = p;
-                state.selectedSize = null;
-                
-                document.getElementById('checkout-name').innerText = p.name;
-                document.getElementById('checkout-price').innerText = `$${Number(p.price).toLocaleString()}`;
-                
-                const sizeContainer = document.getElementById('checkout-sizes');
-                sizeContainer.innerHTML = p.sizes.map(s => `
-                    <span class="size-badge checkout-size" data-size="${s}">${s}</span>
-                `).join('');
-                
-                document.querySelectorAll('.checkout-size').forEach(b => {
-                    b.onclick = () => {
-                        document.querySelectorAll('.checkout-size').forEach(x => x.classList.remove('selected'));
-                        b.classList.add('selected');
-                        state.selectedSize = b.dataset.size;
-                    };
-                });
-                
-                UI.openModal('checkout-panel');
+    const state = { 
+        products: [],
+        selectedProduct: null,
+        selectedSize: null,
+        isLightMode: false
+    };
+
+    // --- FUNCIONES DE BASE DE DATOS (GITHUB) ---
+    async function fetchStock() {
+        try {
+            // Usamos una URL con timestamp para evitar el caché de GitHub
+            const res = await fetch(`https://raw.githubusercontent.com/${CONFIG.OWNER}/${CONFIG.REPO}/main/${CONFIG.PATH}?t=${Date.now()}`);
+            if (res.ok) {
+                state.products = await res.json();
+                renderCatalog();
             }
-        };
+        } catch (e) { console.error("Error cargando stock:", e); }
+    }
 
-        // Theme Toggle Event
-        document.getElementById('theme-switch').onclick = UI.toggleTheme;
-
-        // STAFF LOGIC
-        document.getElementById('admin-trigger').onclick = () => UI.openModal('admin-panel');
-        document.getElementById('modal-overlay').onclick = UI.close;
-
-        document.getElementById('admin-login-btn').onclick = () => {
-            if(document.getElementById('admin-password-input').value === "admin123") {
-                document.getElementById('login-view').classList.add('hidden');
-                document.getElementById('dashboard-view').classList.remove('hidden');
-                UI.notify('Acceso Staff');
-            } else {
-                UI.notify('Error');
-            }
-        };
-
-        const calcPrice = () => {
-            const costo = parseFloat(document.getElementById('p-cost').value) || 0;
-            const margen = parseFloat(document.getElementById('p-margin').value) || 0;
-            document.getElementById('p-price').value = Math.round(costo * (1 + (margen / 100)));
-        };
-        document.getElementById('p-cost').oninput = calcPrice;
-        document.getElementById('p-margin').oninput = calcPrice;
-
-        document.querySelectorAll('#size-selector .size-badge').forEach(b => b.onclick = () => b.classList.toggle('selected'));
-
-        document.getElementById('p-save-btn').onclick = () => {
-            const name = document.getElementById('p-name').value;
-            const price = document.getElementById('p-price').value;
-            const img = document.getElementById('p-img').value;
-            const sizes = Array.from(document.querySelectorAll('#size-selector .size-badge.selected')).map(s => s.dataset.size);
-
-            if(!name || !price || !img || sizes.length === 0) return UI.notify('Incompleto');
-
-            state.products.push({ name, price, img, sizes });
-            renderCatalog();
-            UI.notify('Publicado');
-            UI.close();
-            
-            document.getElementById('p-name').value = "";
-            document.getElementById('p-cost').value = "";
-            document.getElementById('p-price').value = "";
-            document.getElementById('p-img').value = "";
-            document.querySelectorAll('.size-badge').forEach(b => b.classList.remove('selected'));
-        };
-
-        document.getElementById('whatsapp-order-btn').onclick = () => {
-            if(!state.selectedSize) return UI.notify('Elige talle');
-            const numero = "5491156474987"; 
-            const msg = `Hola!%0AEncargo:%0A*${state.selectedProduct.name}*%0ATalle: *${state.selectedSize} BR*%0APrecio: *$${Number(state.selectedProduct.price).toLocaleString()}*`;
-            window.open(`https://wa.me/${numero}?text=${msg}`, '_blank');
-        };
-
-        function renderCatalog() {
-            const grid = document.getElementById('product-grid');
-            grid.innerHTML = state.products.map((p, i) => `
-                <div class="glass-card p-6 group cursor-pointer" onclick="UI.openCheckout(${i})">
-                    <div class="zoom-container aspect-[4/5] mb-5" id="zoom-${i}">
-                        <img src="${p.img}" class="zoom-image">
-                    </div>
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h3 class="text-lg font-black italic uppercase leading-tight">${p.name}</h3>
-                            <p class="accent-text font-black text-xl mt-1">$${Number(p.price).toLocaleString()}</p>
-                        </div>
-                        <div class="bg-white/5 p-2 rounded-xl text-[8px] font-black uppercase opacity-40">BR</div>
-                    </div>
-                </div>
-            `).join('');
-            state.products.forEach((_, i) => UI.initZoom(document.getElementById(`zoom-${i}`)));
-        }
-
-        // SNOW ANIMATION
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-
-        function resize() { 
-            canvas.width = window.innerWidth; 
-            canvas.height = window.innerHeight; 
-            initParticles();
-        }
-
-        function initParticles() {
-            particles = [];
-            const count = Math.floor(window.innerWidth / 12); 
-            for(let i=0; i<count; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    r: Math.random() * 2 + 0.5, 
-                    d: Math.random() * count, 
-                    v: Math.random() * 0.4 + 0.2, 
-                    w: Math.random() * 0.4 - 0.2 
-                });
-            }
-        }
-
-        window.onresize = resize; 
-        resize();
-
-        function anim() {
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            // El color de la nieve cambia según el modo
-            ctx.fillStyle = state.isLightMode ? "rgba(15, 23, 42, 0.15)" : "rgba(255, 255, 255, 0.4)"; 
-            ctx.beginPath();
-            
-            for(let i=0; i<particles.length; i++) {
-                let p = particles[i];
-                ctx.moveTo(p.x, p.y);
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
-                p.y += p.v;
-                p.x += p.w + Math.sin(p.d) * 0.2; 
-                p.d += 0.01;
-                if(p.y > canvas.height) { p.y = -10; p.x = Math.random() * canvas.width; }
-                if(p.x > canvas.width) p.x = 0; else if(p.x < 0) p.x = canvas.width;
-            }
-            ctx.fill();
-            requestAnimationFrame(anim);
-        }
+    async function saveToGithub(newData) {
+        if (!CONFIG.TOKEN) return UI.notify("Falta Token de Acceso");
         
-        window.onload = () => {
-            anim();
-            UI.initZoom(document.getElementById('hero-zoom'));
+        UI.notify("Publicando en la nube...");
+        
+        try {
+            // 1. Obtener el SHA del archivo actual
+            const fileRes = await fetch(`https://api.github.com/repos/${CONFIG.OWNER}/${CONFIG.REPO}/contents/${CONFIG.PATH}`, {
+                headers: { "Authorization": `token ${CONFIG.TOKEN}` }
+            });
+            const fileData = await fileRes.json();
+            const sha = fileData.sha;
+
+            // 2. Subir nueva versión
+            const updateRes = await fetch(`https://api.github.com/repos/${CONFIG.OWNER}/${CONFIG.REPO}/contents/${CONFIG.PATH}`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `token ${CONFIG.TOKEN}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: "Actualización de stock vía Panel Staff",
+                    content: btoa(unescape(encodeURIComponent(JSON.stringify(newData, null, 2)))),
+                    sha: sha
+                })
+            });
+
+            if (updateRes.ok) {
+                UI.notify("¡Sincronizado con GitHub!");
+                return true;
+            } else {
+                throw new Error("Error en API");
+            }
+        } catch (e) {
+            UI.notify("Error de conexión");
+            return false;
         }
-    </script>
+    }
+
+    window.UI = {
+        openModal: (id) => {
+            document.getElementById('modal-overlay').classList.add('active');
+            document.getElementById(id).classList.add('active');
+        },
+        close: () => {
+            document.querySelectorAll('.modal-container, .overlay').forEach(el => el.classList.remove('active'));
+        },
+        notify: (msg) => {
+            const t = document.getElementById('toast');
+            t.innerText = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        },
+        toggleTheme: () => {
+            state.isLightMode = !state.isLightMode;
+            document.body.classList.toggle('light-mode', state.isLightMode);
+            UI.notify(state.isLightMode ? 'Modo Claro' : 'Modo Oscuro');
+        },
+        initZoom: (container) => {
+            if(!container) return;
+            const img = container.querySelector('img');
+            container.onmousemove = (e) => {
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                img.style.transformOrigin = `${x}px ${y}px`;
+                img.style.transform = "scale(2.2)";
+            };
+            container.onmouseleave = () => img.style.transform = "scale(1)";
+        },
+        openCheckout: (index) => {
+            const p = state.products[index];
+            state.selectedProduct = p;
+            state.selectedSize = null;
+            document.getElementById('checkout-name').innerText = p.name;
+            document.getElementById('checkout-price').innerText = `$${Number(p.price).toLocaleString()}`;
+            const sizeContainer = document.getElementById('checkout-sizes');
+            sizeContainer.innerHTML = p.sizes.map(s => `<span class="size-badge checkout-size" data-size="${s}">${s}</span>`).join('');
+            document.querySelectorAll('.checkout-size').forEach(b => {
+                b.onclick = () => {
+                    document.querySelectorAll('.checkout-size').forEach(x => x.classList.remove('selected'));
+                    b.classList.add('selected');
+                    state.selectedSize = b.dataset.size;
+                };
+            });
+            UI.openModal('checkout-panel');
+        }
+    };
+
+    // --- EVENTOS ---
+    document.getElementById('theme-switch').onclick = UI.toggleTheme;
+    document.getElementById('admin-trigger').onclick = () => UI.openModal('admin-panel');
+    document.getElementById('modal-overlay').onclick = UI.close;
+
+    // Login Staff mejorado: Pide el Token
+    document.getElementById('admin-login-btn').onclick = () => {
+        const pass = document.getElementById('admin-password-input').value;
+        if(pass.startsWith("ghp_")) { // Si pega el token directamente
+            CONFIG.TOKEN = pass;
+            sessionStorage.setItem('gh_token', pass);
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('dashboard-view').classList.remove('hidden');
+            UI.notify('Staff Conectado');
+        } else {
+            UI.notify('Usa tu Token de GitHub');
+        }
+    };
+
+    // Cálculo de precio automático
+    const calcPrice = () => {
+        const costo = parseFloat(document.getElementById('p-cost').value) || 0;
+        const margen = parseFloat(document.getElementById('p-margin').value) || 0;
+        document.getElementById('p-price').value = Math.round(costo * (1 + (margen / 100)));
+    };
+    document.getElementById('p-cost').oninput = calcPrice;
+    document.getElementById('p-margin').oninput = calcPrice;
+
+    document.querySelectorAll('#size-selector .size-badge').forEach(b => b.onclick = () => b.classList.toggle('selected'));
+
+    // Guardar Producto
+    document.getElementById('p-save-btn').onclick = async () => {
+        const name = document.getElementById('p-name').value;
+        const price = document.getElementById('p-price').value;
+        const img = document.getElementById('p-img').value;
+        const sizes = Array.from(document.querySelectorAll('#size-selector .size-badge.selected')).map(s => s.dataset.size);
+
+        if(!name || !price || !img || sizes.length === 0) return UI.notify('Incompleto');
+
+        const newProduct = { name, price, img, sizes };
+        const updatedProducts = [...state.products, newProduct];
+
+        const success = await saveToGithub(updatedProducts);
+        if(success) {
+            state.products = updatedProducts;
+            renderCatalog();
+            UI.close();
+            // Limpiar campos
+            document.querySelectorAll('.admin-input').forEach(i => i.value = "");
+            document.querySelectorAll('.size-badge').forEach(b => b.classList.remove('selected'));
+        }
+    };
+
+    document.getElementById('whatsapp-order-btn').onclick = () => {
+        if(!state.selectedSize) return UI.notify('Elige talle');
+        const numero = "5491156474987"; 
+        const msg = `Hola!%0AEncargo:%0A*${state.selectedProduct.name}*%0ATalle: *${state.selectedSize} BR*%0APrecio: *$${Number(state.selectedProduct.price).toLocaleString()}*`;
+        window.open(`https://wa.me/${numero}?text=${msg}`, '_blank');
+    };
+
+    function renderCatalog() {
+        const grid = document.getElementById('product-grid');
+        if (state.products.length === 0) {
+            grid.innerHTML = `<div class="col-span-full py-20 text-center opacity-30 font-bold uppercase tracking-widest">Aún no hay stock disponible</div>`;
+            return;
+        }
+        grid.innerHTML = state.products.map((p, i) => `
+            <div class="glass-card p-6 group cursor-pointer" onclick="UI.openCheckout(${i})">
+                <div class="zoom-container aspect-[4/5] mb-5" id="zoom-${i}">
+                    <img src="${p.img}" class="zoom-image" loading="lazy">
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-lg font-black italic uppercase leading-tight">${p.name}</h3>
+                        <p class="accent-text font-black text-xl mt-1">$${Number(p.price).toLocaleString()}</p>
+                    </div>
+                    <div class="bg-white/5 p-2 rounded-xl text-[8px] font-black uppercase opacity-40">BR</div>
+                </div>
+            </div>
+        `).join('');
+        state.products.forEach((_, i) => UI.initZoom(document.getElementById(`zoom-${i}`)));
+    }
+
+    // Animación de fondo
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initParticles(); }
+    function initParticles() {
+        particles = [];
+        const count = Math.floor(window.innerWidth / 12); 
+        for(let i=0; i<count; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 2 + 0.5,
+                d: Math.random() * count,
+                v: Math.random() * 0.4 + 0.2,
+                w: Math.random() * 0.4 - 0.2
+            });
+        }
+    }
+    window.onresize = resize; resize();
+    function anim() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = state.isLightMode ? "rgba(15, 23, 42, 0.1)" : "rgba(255, 255, 255, 0.3)"; 
+        ctx.beginPath();
+        for(let p of particles) {
+            ctx.moveTo(p.x, p.y);
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+            p.y += p.v; p.x += p.w + Math.sin(p.d) * 0.2; p.d += 0.01;
+            if(p.y > canvas.height) { p.y = -10; p.x = Math.random() * canvas.width; }
+        }
+        ctx.fill();
+        requestAnimationFrame(anim);
+    }
+
+    window.onload = () => {
+        anim();
+        UI.initZoom(document.getElementById('hero-zoom'));
+        fetchStock(); // CARGAR DATOS AL INICIAR
+    }
+</script>
+    
 </body>
 </html>
+
 
