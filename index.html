@@ -368,12 +368,12 @@
     <a href="https://wa.me/5491156474987" target="_blank" class="whatsapp-float"><i class="fa-brands fa-whatsapp"></i></a>
 
 <script type="module">
-    // --- CONFIGURACIÓN DE GITHUB ---
+    // --- CONFIGURACIÓN ---
     const CONFIG = {
         OWNER: 'lautyortiz987-wq',
         REPO: 'oficialpasosurbanos',
         PATH: 'stock.json'
-    }; // Aquí borré la llave extra que sobraba
+    };
 
     const state = { 
         products: [],
@@ -382,38 +382,44 @@
         isLightMode: false
     };
 
-    // --- FUNCIONES DE BASE DE DATOS (GITHUB) ---
+    // --- CONEXIÓN CON GITHUB ---
     async function fetchStock() {
         try {
+            // Agregamos un número aleatorio al final para que no cargue info vieja (cache)
             const res = await fetch(`https://raw.githubusercontent.com/${CONFIG.OWNER}/${CONFIG.REPO}/main/${CONFIG.PATH}?t=${Date.now()}`);
             if (res.ok) {
                 state.products = await res.json();
                 renderCatalog();
             }
-        } catch (e) { console.error("Error cargando stock:", e); }
+        } catch (e) { console.error("Error al leer stock.json:", e); }
     }
 
     async function saveToGithub(newData) {
+        // Obtenemos el token que pegaste en el login de Staff
         const token = sessionStorage.getItem('gh_token'); 
-        if (!token) return UI.notify("Falta Token (Reingresa al Staff)");
         
-        UI.notify("Publicando en la nube...");
+        if (!token) {
+            UI.notify("Error: No estás autenticado como Staff");
+            return false;
+        }
+        
+        UI.notify("Sincronizando con GitHub...");
         
         try {
-            // 1. Obtener el SHA del archivo actual
+            // 1. Obtener los datos actuales del archivo para tener el "SHA" (es como el ID de la versión)
             const fileRes = await fetch(`https://api.github.com/repos/${CONFIG.OWNER}/${CONFIG.REPO}/contents/${CONFIG.PATH}`, {
                 headers: { "Authorization": `token ${token}` }
             });
             
             if (!fileRes.ok) {
-                UI.notify("Error: No existe stock.json en GitHub");
+                UI.notify("Error de permisos (Verifica tu Token)");
                 return false;
             }
 
             const fileData = await fileRes.json();
             const sha = fileData.sha;
 
-            // 2. Subir nueva versión
+            // 2. Enviar el nuevo contenido
             const updateRes = await fetch(`https://api.github.com/repos/${CONFIG.OWNER}/${CONFIG.REPO}/contents/${CONFIG.PATH}`, {
                 method: "PUT",
                 headers: {
@@ -421,24 +427,27 @@
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    message: "Actualización de stock vía Panel Staff",
+                    message: "Actualización de stock desde Panel Web",
                     content: btoa(unescape(encodeURIComponent(JSON.stringify(newData, null, 2)))),
                     sha: sha
                 })
             });
 
             if (updateRes.ok) {
-                UI.notify("¡Sincronizado con GitHub!");
+                UI.notify("¡Stock actualizado con éxito!");
                 return true;
             } else {
-                throw new Error("Error en API");
+                const errorData = await updateRes.json();
+                UI.notify("Error: " + errorData.message);
+                return false;
             }
         } catch (e) {
-            UI.notify("Error de permisos o conexión");
+            UI.notify("Error crítico de conexión");
             return false;
         }
     }
 
+    // --- INTERFAZ Y EVENTOS ---
     window.UI = {
         openModal: (id) => {
             document.getElementById('modal-overlay').classList.add('active');
@@ -488,11 +497,12 @@
         }
     };
 
-    // --- EVENTOS ---
+    // Vincular botones
     document.getElementById('theme-switch').onclick = UI.toggleTheme;
     document.getElementById('admin-trigger').onclick = () => UI.openModal('admin-panel');
     document.getElementById('modal-overlay').onclick = UI.close;
 
+    // Login Staff con Token
     document.getElementById('admin-login-btn').onclick = () => {
         const inputToken = document.getElementById('admin-password-input').value.trim();
         if(inputToken.startsWith("ghp_")) { 
@@ -505,7 +515,7 @@
         }
     };
 
-    // Cálculo de precio automático
+    // Auto-precio
     const calcPrice = () => {
         const costo = parseFloat(document.getElementById('p-cost').value) || 0;
         const margen = parseFloat(document.getElementById('p-margin').value) || 0;
@@ -514,7 +524,10 @@
     document.getElementById('p-cost').oninput = calcPrice;
     document.getElementById('p-margin').oninput = calcPrice;
 
-    document.querySelectorAll('#size-selector .size-badge').forEach(b => b.onclick = () => b.classList.toggle('selected'));
+    // Selector de talles en Admin
+    document.querySelectorAll('#size-selector .size-badge').forEach(b => {
+        b.onclick = () => b.classList.toggle('selected');
+    });
 
     // Guardar Producto
     document.getElementById('p-save-btn').onclick = async () => {
@@ -523,7 +536,10 @@
         const img = document.getElementById('p-img').value;
         const sizes = Array.from(document.querySelectorAll('#size-selector .size-badge.selected')).map(s => s.dataset.size);
 
-        if(!name || !price || !img || sizes.length === 0) return UI.notify('Incompleto');
+        if(!name || !price || !img || sizes.length === 0) {
+            UI.notify('Completa todos los campos');
+            return;
+        }
 
         const newProduct = { name, price, img, sizes };
         const updatedProducts = [...state.products, newProduct];
@@ -533,22 +549,28 @@
             state.products = updatedProducts;
             renderCatalog();
             UI.close();
-            document.querySelectorAll('.admin-input').forEach(i => i.value = "");
+            // Limpiar formulario
+            document.getElementById('p-name').value = "";
+            document.getElementById('p-cost').value = "";
+            document.getElementById('p-margin').value = "50";
+            document.getElementById('p-price').value = "";
+            document.getElementById('p-img').value = "";
             document.querySelectorAll('.size-badge').forEach(b => b.classList.remove('selected'));
         }
     };
 
+    // Botón WhatsApp
     document.getElementById('whatsapp-order-btn').onclick = () => {
-        if(!state.selectedSize) return UI.notify('Elige talle');
+        if(!state.selectedSize) return UI.notify('Selecciona un talle');
         const numero = "5491156474987"; 
-        const msg = `Hola!%0AEncargo:%0A*${state.selectedProduct.name}*%0ATalle: *${state.selectedSize} BR*%0APrecio: *$${Number(state.selectedProduct.price).toLocaleString()}*`;
+        const msg = `Hola! Quiero encargar:%0A*${state.selectedProduct.name}*%0ATalle: *${state.selectedSize} BR*%0APrecio: *$${Number(state.selectedProduct.price).toLocaleString()}*`;
         window.open(`https://wa.me/${numero}?text=${msg}`, '_blank');
     };
 
     function renderCatalog() {
         const grid = document.getElementById('product-grid');
         if (state.products.length === 0) {
-            grid.innerHTML = `<div class="col-span-full py-20 text-center opacity-30 font-bold uppercase tracking-widest">Aún no hay stock disponible</div>`;
+            grid.innerHTML = `<div class="col-span-full py-20 text-center opacity-30 font-bold uppercase">Sin stock disponible</div>`;
             return;
         }
         grid.innerHTML = state.products.map((p, i) => `
@@ -568,14 +590,14 @@
         state.products.forEach((_, i) => UI.initZoom(document.getElementById(`zoom-${i}`)));
     }
 
-    // Animación de fondo
+    // Animación de partículas (Fondo)
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initParticles(); }
     function initParticles() {
         particles = [];
-        const count = Math.floor(window.innerWidth / 12); 
+        const count = Math.floor(window.innerWidth / 15); 
         for(let i=0; i<count; i++) {
             particles.push({
                 x: Math.random() * canvas.width,
@@ -611,6 +633,7 @@
     
 </body>
 </html>
+
 
 
 
