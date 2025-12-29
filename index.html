@@ -480,7 +480,7 @@ UI.close();
 
         document.getElementById('whatsapp-order-btn').onclick = () => {
             if(!state.selectedSize) return UI.notify('Elige talle');
-            const numero = "5491122334455"; 
+            const numero = "5491156474987"; 
             const msg = `Hola!%0AEncargo:%0A*${state.selectedProduct.name}*%0ATalle: *${state.selectedSize} BR*%0APrecio: *$${Number(state.selectedProduct.price).toLocaleString()}*`;
             window.open(`https://wa.me/${numero}?text=${msg}`, '_blank');
         };
@@ -566,4 +566,5 @@ UI.close();
 </body>
 
 </html>
+
 
