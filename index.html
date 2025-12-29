@@ -369,11 +369,11 @@
 
   <script type="module">
     // --- CONFIGURACIÓN DE GITHUB ---
-    const CONFIG = {
-        OWNER: 'lautyortiz987-wq',
-        REPO: 'oficialpasosurbanos',
-        PATH: 'stock.json',
-        TOKEN: sessionStorage.getItem('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') || ""
+const CONFIG = {
+    OWNER: 'lautyortiz987-wq',
+    REPO: 'oficialpasosurbanos',
+    PATH: 'stock.json'
+};
     };
 
     const state = { 
@@ -395,10 +395,14 @@
         } catch (e) { console.error("Error cargando stock:", e); }
     }
 
-    async function saveToGithub(newData) {
-        if (!CONFIG.TOKEN) return UI.notify("Falta Token de Acceso");
-        
-        UI.notify("Publicando en la nube...");
+      async function saveToGithub(newData) {
+    // Esta línea es la clave: busca el token que pegaste en el login
+    const token = sessionStorage.getItem('gh_token'); 
+    
+    if (!token) return UI.notify("Falta Token (Reingresa al Staff)");
+    
+    UI.notify("Publicando en la nube...");
+    // ... resto del código ...
         
         try {
             // 1. Obtener el SHA del archivo actual
@@ -489,19 +493,19 @@
     document.getElementById('modal-overlay').onclick = UI.close;
 
     // Login Staff mejorado: Pide el Token
-    document.getElementById('admin-login-btn').onclick = () => {
-        const pass = document.getElementById('admin-password-input').value;
-        if(pass.startsWith("ghp_")) { // Si pega el token directamente
-            CONFIG.TOKEN = pass;
-            sessionStorage.setItem('gh_token', pass);
-            document.getElementById('login-view').classList.add('hidden');
-            document.getElementById('dashboard-view').classList.remove('hidden');
-            UI.notify('Staff Conectado');
-        } else {
-            UI.notify('Usa tu Token de GitHub');
-        }
-    };
-
+  document.getElementById('admin-login-btn').onclick = () => {
+    const inputToken = document.getElementById('admin-password-input').value.trim();
+    
+    // Verificamos que sea un token de GitHub (empiezan con ghp_)
+    if(inputToken.startsWith("ghp_")) { 
+        sessionStorage.setItem('gh_token', inputToken); // Guardamos el token en la sesión
+        document.getElementById('login-view').classList.add('hidden');
+        document.getElementById('dashboard-view').classList.remove('hidden');
+        UI.notify('Staff Conectado');
+    } else {
+        UI.notify('Error: Pega tu Token ghp_ aquí');
+    }
+};
     // Cálculo de precio automático
     const calcPrice = () => {
         const costo = parseFloat(document.getElementById('p-cost').value) || 0;
@@ -609,6 +613,7 @@
     
 </body>
 </html>
+
 
 
 
