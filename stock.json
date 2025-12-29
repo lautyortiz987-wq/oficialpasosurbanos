@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "marca": "Ejemplo",
+    "modelo": "Zapatilla Test",
+    "color": "Negro",
+    "precio": 0,
+    "stock": 0,
+    "talles": [40, 41],
+    "imagen": "https://via.placeholder.com/150",
+    "activo": false
+  }
+]
