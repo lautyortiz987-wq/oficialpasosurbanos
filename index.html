@@ -384,17 +384,23 @@
         isLightMode: false
     };
 
-    // --- CONEXIÓN CON GITHUB ---
-    async function fetchStock() {
-        try {
-            const res = await fetch(`https://raw.githubusercontent.com/${CONFIG.OWNER}/${CONFIG.REPO}/main/${CONFIG.PATH}?t=${Date.now()}`);
-            if (res.ok) {
-                state.products = await res.json();
-                renderCatalog();
-            }
-        } catch (e) { console.error("Error al leer stock.json:", e); }
+   // --- CONEXIÓN CON GITHUB MEJORADA PARA EVITAR CACHE ---
+async function fetchStock() {
+    try {
+        // El "?t=" + Date.now() hace que GitHub crea que es un pedido nuevo cada vez
+        const res = await fetch(`https://raw.githubusercontent.com/${CONFIG.OWNER}/${CONFIG.REPO}/main/${CONFIG.PATH}?nocache=${Date.now()}`, {
+            cache: "no-store" // Esto le dice al navegador: "No guardes una copia vieja"
+        });
+        
+        if (res.ok) {
+            state.products = await res.json();
+            renderCatalog();
+        }
+    } catch (e) { 
+        console.error("Error al leer stock.json:", e); 
     }
-
+}
+    
     async function saveToGithub(newData) {
         const token = sessionStorage.getItem('gh_token'); 
         if (!token) {
@@ -644,6 +650,7 @@
     
 </body>
 </html>
+
 
 
 
