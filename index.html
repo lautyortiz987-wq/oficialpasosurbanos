@@ -364,8 +364,8 @@
     </div>
 
     <!-- BOTONES SOCIALES -->
-    <a href="https://instagram.com" target="_blank" class="ig-float"><i class="fa-brands fa-instagram"></i></a>
-    <a href="https://wa.me/5491122334455" target="_blank" class="whatsapp-float"><i class="fa-brands fa-whatsapp"></i></a>
+    <a href="https://www.instagram.com/passos.urbanoss/" target="_blank" class="ig-float"><i class="fa-brands fa-instagram"></i></a>
+    <a href="https://wa.me/5491156474987" target="_blank" class="whatsapp-float"><i class="fa-brands fa-whatsapp"></i></a>
 
     <script type="module">
         const state = { 
@@ -479,7 +479,7 @@
 
         document.getElementById('whatsapp-order-btn').onclick = () => {
             if(!state.selectedSize) return UI.notify('Elige talle');
-            const numero = "5491122334455"; 
+            const numero = "5491156474987"; 
             const msg = `Hola!%0AEncargo:%0A*${state.selectedProduct.name}*%0ATalle: *${state.selectedSize} BR*%0APrecio: *$${Number(state.selectedProduct.price).toLocaleString()}*`;
             window.open(`https://wa.me/${numero}?text=${msg}`, '_blank');
         };
@@ -559,3 +559,4 @@
     </script>
 </body>
 </html>
+
