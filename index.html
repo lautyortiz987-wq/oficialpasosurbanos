@@ -364,12 +364,12 @@
     </div>
 
     <!-- BOTONES SOCIALES -->
-    <a href="https://instagram.com" target="_blank" class="ig-float"><i class="fa-brands fa-instagram"></i></a>
+    <a href="https://www.instagram.com/passos.urbanoss/" target="_blank" class="ig-float"><i class="fa-brands fa-instagram"></i></a>
     <a href="https://wa.me/5491156474987" target="_blank" class="whatsapp-float"><i class="fa-brands fa-whatsapp"></i></a>
 
     <script type="module">
         const state = { 
-            products: [],
+             products: JSON.parse(localStorage.getItem('pasosProductos')) || [],
             selectedProduct: null,
             selectedSize: null,
             isLightMode: false
@@ -465,10 +465,11 @@
 
             if(!name || !price || !img || sizes.length === 0) return UI.notify('Incompleto');
 
-            state.products.push({ name, price, img, sizes });
-            renderCatalog();
-            UI.notify('Publicado');
-            UI.close();
+           state.products.push({ name, price, img, sizes });
+localStorage.setItem('pasosProductos', JSON.stringify(state.products));
+renderCatalog();
+UI.notify('Publicado');
+UI.close();
             
             document.getElementById('p-name').value = "";
             document.getElementById('p-cost').value = "";
@@ -555,8 +556,14 @@
         window.onload = () => {
             anim();
             UI.initZoom(document.getElementById('hero-zoom'));
+
+            if (state.products.length > 0) {
+    renderCatalog();
+}
+
         }
     </script>
 </body>
 
 </html>
+
