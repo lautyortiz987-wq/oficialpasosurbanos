@@ -371,14 +371,14 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
+        
 const firebaseConfig = {
   apiKey: "PEGÁ TU API KEY",
   authDomain: "PEGÁ TU AUTH DOMAIN",
   projectId: "PEGÁ TU PROJECT ID",
   storageBucket: "PEGÁ TU STORAGE",
   messagingSenderId: "PEGÁ TU ID",
-  appId: "PEGÁ TU APP ID"
+  appId: "PEGÁ TU APP ID",  // ← la coma faltante
 
 
 const app = initializeApp(firebaseConfig);
@@ -587,6 +587,7 @@ UI.close();
 </body>
 
 </html>
+
 
 
 
