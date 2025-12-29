@@ -58,5 +58,15 @@
       "42",
       "44"
     ]
+  },
+  {
+    "name": "Jordan ns cuanto",
+    "price": "40000",
+    "img": "https://i.ibb.co/NdDYmbh0/IMG-20251223-WA0001.jpg",
+    "sizes": [
+      "37",
+      "38",
+      "39"
+    ]
   }
 ]
