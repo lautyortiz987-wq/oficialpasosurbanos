@@ -367,14 +367,13 @@
     <a href="https://www.instagram.com/passos.urbanoss/" target="_blank" class="ig-float"><i class="fa-brands fa-instagram"></i></a>
     <a href="https://wa.me/5491156474987" target="_blank" class="whatsapp-float"><i class="fa-brands fa-whatsapp"></i></a>
 
-  <script type="module">
+<script type="module">
     // --- CONFIGURACIÓN DE GITHUB ---
-const CONFIG = {
-    OWNER: 'lautyortiz987-wq',
-    REPO: 'oficialpasosurbanos',
-    PATH: 'stock.json'
-};
-    };
+    const CONFIG = {
+        OWNER: 'lautyortiz987-wq',
+        REPO: 'oficialpasosurbanos',
+        PATH: 'stock.json'
+    }; // Aquí borré la llave extra que sobraba
 
     const state = { 
         products: [],
@@ -386,7 +385,6 @@ const CONFIG = {
     // --- FUNCIONES DE BASE DE DATOS (GITHUB) ---
     async function fetchStock() {
         try {
-            // Usamos una URL con timestamp para evitar el caché de GitHub
             const res = await fetch(`https://raw.githubusercontent.com/${CONFIG.OWNER}/${CONFIG.REPO}/main/${CONFIG.PATH}?t=${Date.now()}`);
             if (res.ok) {
                 state.products = await res.json();
@@ -395,20 +393,23 @@ const CONFIG = {
         } catch (e) { console.error("Error cargando stock:", e); }
     }
 
-      async function saveToGithub(newData) {
-    // Esta línea es la clave: busca el token que pegaste en el login
-    const token = sessionStorage.getItem('gh_token'); 
-    
-    if (!token) return UI.notify("Falta Token (Reingresa al Staff)");
-    
-    UI.notify("Publicando en la nube...");
-    // ... resto del código ...
+    async function saveToGithub(newData) {
+        const token = sessionStorage.getItem('gh_token'); 
+        if (!token) return UI.notify("Falta Token (Reingresa al Staff)");
+        
+        UI.notify("Publicando en la nube...");
         
         try {
             // 1. Obtener el SHA del archivo actual
             const fileRes = await fetch(`https://api.github.com/repos/${CONFIG.OWNER}/${CONFIG.REPO}/contents/${CONFIG.PATH}`, {
-                headers: { "Authorization": `token ${CONFIG.TOKEN}` }
+                headers: { "Authorization": `token ${token}` }
             });
+            
+            if (!fileRes.ok) {
+                UI.notify("Error: No existe stock.json en GitHub");
+                return false;
+            }
+
             const fileData = await fileRes.json();
             const sha = fileData.sha;
 
@@ -416,7 +417,7 @@ const CONFIG = {
             const updateRes = await fetch(`https://api.github.com/repos/${CONFIG.OWNER}/${CONFIG.REPO}/contents/${CONFIG.PATH}`, {
                 method: "PUT",
                 headers: {
-                    "Authorization": `token ${CONFIG.TOKEN}`,
+                    "Authorization": `token ${token}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
@@ -433,7 +434,7 @@ const CONFIG = {
                 throw new Error("Error en API");
             }
         } catch (e) {
-            UI.notify("Error de conexión");
+            UI.notify("Error de permisos o conexión");
             return false;
         }
     }
@@ -492,20 +493,18 @@ const CONFIG = {
     document.getElementById('admin-trigger').onclick = () => UI.openModal('admin-panel');
     document.getElementById('modal-overlay').onclick = UI.close;
 
-    // Login Staff mejorado: Pide el Token
-  document.getElementById('admin-login-btn').onclick = () => {
-    const inputToken = document.getElementById('admin-password-input').value.trim();
-    
-    // Verificamos que sea un token de GitHub (empiezan con ghp_)
-    if(inputToken.startsWith("ghp_")) { 
-        sessionStorage.setItem('gh_token', inputToken); // Guardamos el token en la sesión
-        document.getElementById('login-view').classList.add('hidden');
-        document.getElementById('dashboard-view').classList.remove('hidden');
-        UI.notify('Staff Conectado');
-    } else {
-        UI.notify('Error: Pega tu Token ghp_ aquí');
-    }
-};
+    document.getElementById('admin-login-btn').onclick = () => {
+        const inputToken = document.getElementById('admin-password-input').value.trim();
+        if(inputToken.startsWith("ghp_")) { 
+            sessionStorage.setItem('gh_token', inputToken); 
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('dashboard-view').classList.remove('hidden');
+            UI.notify('Staff Conectado');
+        } else {
+            UI.notify('Error: Pega tu Token ghp_ aquí');
+        }
+    };
+
     // Cálculo de precio automático
     const calcPrice = () => {
         const costo = parseFloat(document.getElementById('p-cost').value) || 0;
@@ -534,7 +533,6 @@ const CONFIG = {
             state.products = updatedProducts;
             renderCatalog();
             UI.close();
-            // Limpiar campos
             document.querySelectorAll('.admin-input').forEach(i => i.value = "");
             document.querySelectorAll('.size-badge').forEach(b => b.classList.remove('selected'));
         }
@@ -607,12 +605,13 @@ const CONFIG = {
     window.onload = () => {
         anim();
         UI.initZoom(document.getElementById('hero-zoom'));
-        fetchStock(); // CARGAR DATOS AL INICIAR
+        fetchStock(); 
     }
 </script>
     
 </body>
 </html>
+
 
 
 
