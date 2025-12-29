@@ -134,6 +134,7 @@
         .table-container::-webkit-scrollbar { width: 4px; }
         .table-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 
+        /* Theme Switcher Styles */
         .theme-toggle {
             position: relative;
             width: 60px;
@@ -160,27 +161,6 @@
         }
         .light-mode .theme-toggle-dot { transform: translateX(30px); }
         .theme-toggle i { font-size: 12px; z-index: 2; color: var(--text-color); opacity: 0.5; }
-
-        /* Estilo botón Ver Más */
-        .btn-view-more {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            color: var(--text-color);
-            padding: 15px 40px;
-            border-radius: 20px;
-            font-weight: 800;
-            text-transform: uppercase;
-            font-size: 10px;
-            letter-spacing: 2px;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        .btn-view-more:hover {
-            background: var(--brand-color);
-            color: white;
-            border-color: var(--brand-color);
-            transform: scale(1.05);
-        }
     </style>
 </head>
 <body class="theme-dark">
@@ -243,16 +223,11 @@
             <h2 class="text-5xl font-black italic uppercase tracking-tighter mb-16">
                 STOCK<br><span class="accent-text">DISPONIBLE</span>
             </h2>
-            
             <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Productos aquí -->
-            </div>
-
-            <!-- BOTÓN VER MÁS -->
-            <div id="view-more-container" class="mt-16 text-center hidden">
-                <button id="view-more-btn" class="btn-view-more">
-                    Ver más modelos
-                </button>
+                <div class="col-span-full py-20 text-center opacity-30 font-bold uppercase tracking-widest">
+                    <i class="fa-solid fa-box-open text-4xl mb-4 block"></i>
+                    Aún no hay productos disponibles
+                </div>
             </div>
         </div>
     </main>
@@ -365,7 +340,7 @@
                 </div>
 
                 <label class="block text-[10px] uppercase font-black opacity-40 mb-2">Seleccionar Foto</label>
-                <input type="file" id="p-img-file" accept="image/*" class="admin-input" style="color:white; padding:10px;">
+<input type="file" id="p-img-file" accept="image/*" class="admin-input" style="color:white; padding:10px;">
                 
                 <span class="calc-label">Talles disponibles (BR)</span>
                 <div class="grid grid-cols-5 gap-2 mb-6" id="size-selector">
@@ -398,7 +373,7 @@
         OWNER: 'lautyortiz987-wq',
         REPO: 'oficialpasosurbanos',
         PATH: 'stock.json',
-        IMGBB_KEY: 'd4cde83f6e49f61e9940910034f671cf',
+        IMGBB_KEY: 'd4cde83f6e49f61e9940910034f671cf', // Tu Key agregada
         TOKEN: sessionStorage.getItem('gh_token') || "" 
     };
     
@@ -406,20 +381,26 @@
         products: [],
         selectedProduct: null,
         selectedSize: null,
-        isLightMode: false,
-        showAll: false // NUEVO: Control de vista
+        isLightMode: false
     };
 
-    async function fetchStock() {
-        try {
-            const res = await fetch(`https://raw.githubusercontent.com/${CONFIG.OWNER}/${CONFIG.REPO}/main/${CONFIG.PATH}?t=${Date.now()}`);
-            if (res.ok) {
-                state.products = await res.json();
-                renderCatalog();
-            }
-        } catch (e) { console.error("Error al leer stock.json:", e); }
+   // --- CONEXIÓN CON GITHUB MEJORADA PARA EVITAR CACHE ---
+async function fetchStock() {
+    try {
+        // El "?t=" + Date.now() hace que GitHub crea que es un pedido nuevo cada vez
+        const res = await fetch(`https://raw.githubusercontent.com/${CONFIG.OWNER}/${CONFIG.REPO}/main/${CONFIG.PATH}?nocache=${Date.now()}`, {
+            cache: "no-store" // Esto le dice al navegador: "No guardes una copia vieja"
+        });
+        
+        if (res.ok) {
+            state.products = await res.json();
+            renderCatalog();
+        }
+    } catch (e) { 
+        console.error("Error al leer stock.json:", e); 
     }
-
+}
+    
     async function saveToGithub(newData) {
         const token = sessionStorage.getItem('gh_token'); 
         if (!token) {
@@ -463,6 +444,7 @@
         }
     }
 
+    // --- FUNCIÓN PARA SUBIR A IMGBB ---
     async function uploadImage(file) {
         const formData = new FormData();
         formData.append('image', file);
@@ -480,6 +462,7 @@
         }
     }
 
+    // --- INTERFAZ Y EVENTOS ---
     window.UI = {
         openModal: (id) => {
             document.getElementById('modal-overlay').classList.add('active');
@@ -533,12 +516,6 @@
     document.getElementById('admin-trigger').onclick = () => UI.openModal('admin-panel');
     document.getElementById('modal-overlay').onclick = UI.close;
 
-    // Lógica botón Ver Más
-    document.getElementById('view-more-btn').onclick = () => {
-        state.showAll = true;
-        renderCatalog();
-    };
-
     document.getElementById('admin-login-btn').onclick = () => {
         const inputToken = document.getElementById('admin-password-input').value.trim();
         if(inputToken.startsWith("ghp_")) { 
@@ -551,6 +528,7 @@
         }
     };
 
+    // Auto-precio (Se mantiene igual)
     const calcPrice = () => {
         const costo = parseFloat(document.getElementById('p-cost').value) || 0;
         const margen = parseFloat(document.getElementById('p-margin').value) || 0;
@@ -559,14 +537,16 @@
     document.getElementById('p-cost').oninput = calcPrice;
     document.getElementById('p-margin').oninput = calcPrice;
 
+    // Selector de talles (Se mantiene igual)
     document.querySelectorAll('#size-selector .size-badge').forEach(b => {
         b.onclick = () => b.classList.toggle('selected');
     });
 
+    // Guardar Producto con Subida de Imagen
     document.getElementById('p-save-btn').onclick = async () => {
         const name = document.getElementById('p-name').value;
         const price = document.getElementById('p-price').value;
-        const fileInput = document.getElementById('p-img-file');
+        const fileInput = document.getElementById('p-img-file'); // Usamos el nuevo input file
         const sizes = Array.from(document.querySelectorAll('#size-selector .size-badge.selected')).map(s => s.dataset.size);
 
         if(!name || !price || !fileInput.files[0] || sizes.length === 0) {
@@ -580,16 +560,17 @@
         if(!imgUrl) return;
 
         const newProduct = { name, price, img: imgUrl, sizes };
-        const updatedProducts = [newProduct, ...state.products]; // NUEVO al principio
+        const updatedProducts = [...state.products, newProduct];
 
         const success = await saveToGithub(updatedProducts);
         if(success) {
             state.products = updatedProducts;
             renderCatalog();
             UI.close();
+            // Limpiar formulario
             document.getElementById('p-name').value = "";
             document.getElementById('p-cost').value = "";
-            document.getElementById('p-margin').value = "100";
+            document.getElementById('p-margin').value = "50";
             document.getElementById('p-price').value = "";
             fileInput.value = "";
             document.querySelectorAll('.size-badge').forEach(b => b.classList.remove('selected'));
@@ -605,18 +586,11 @@
 
     function renderCatalog() {
         const grid = document.getElementById('product-grid');
-        const moreBtnContainer = document.getElementById('view-more-container');
-        
         if (state.products.length === 0) {
             grid.innerHTML = `<div class="col-span-full py-20 text-center opacity-30 font-bold uppercase">Sin stock disponible</div>`;
-            moreBtnContainer.classList.add('hidden');
             return;
         }
-
-        // Lógica de recorte
-        const productsToShow = state.showAll ? state.products : state.products.slice(0, 3);
-
-        grid.innerHTML = productsToShow.map((p, i) => `
+        grid.innerHTML = state.products.map((p, i) => `
             <div class="glass-card p-6 group cursor-pointer" onclick="UI.openCheckout(${i})">
                 <div class="zoom-container aspect-[4/5] mb-5" id="zoom-${i}">
                     <img src="${p.img}" class="zoom-image" loading="lazy">
@@ -630,15 +604,7 @@
                 </div>
             </div>
         `).join('');
-
-        // Manejo visibilidad botón
-        if (state.products.length > 3 && !state.showAll) {
-            moreBtnContainer.classList.remove('hidden');
-        } else {
-            moreBtnContainer.classList.add('hidden');
-        }
-
-        productsToShow.forEach((_, i) => UI.initZoom(document.getElementById(`zoom-${i}`)));
+        state.products.forEach((_, i) => UI.initZoom(document.getElementById(`zoom-${i}`)));
     }
 
     // Animación de partículas
@@ -684,3 +650,4 @@
     
 </body>
 </html>
+
