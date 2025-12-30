@@ -28,5 +28,15 @@
       "36",
       "37"
     ]
+  },
+  {
+    "name": "asd",
+    "price": "44444",
+    "img": "https://i.ibb.co/0VJ7BcN0/rolas.png",
+    "sizes": [
+      "36",
+      "37",
+      "38"
+    ]
   }
 ]
