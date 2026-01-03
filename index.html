@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pasos Urbanos - Premium</title>
     
-    <!-- LIBRERÍAS EXTERNAS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
@@ -202,11 +201,13 @@
             color: white;
         }
 
-        /* Footer styling */
         footer {
             background: rgba(10, 10, 10, 0.95);
             border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
+
+        @keyframes toastIn { from { bottom: 0; opacity: 0; } to { bottom: 40px; opacity: 1; } }
+        @keyframes toastOut { from { bottom: 40px; opacity: 1; } to { bottom: 0; opacity: 0; } }
     </style>
 </head>
 <body class="theme-dark">
@@ -226,7 +227,7 @@
                 <div class="hidden md:flex items-center space-x-8 text-[10px] font-black uppercase tracking-widest text-white/70">
                     <a href="#inicio" class="hover:text-white transition-colors">Inicio</a>
                     <a href="#catalogo" class="hover:text-white transition-colors">Catálogo</a>
-                    <a href="#talles-info" class="hover:text-white transition-colors">Guía</a>
+                    <a href="#talles-info" class="hover:text-white transition-colors">Guía De Talles</a>
                     <a href="#nosotros" class="hover:text-white transition-colors">Nosotros</a>
                 </div>
 
@@ -237,7 +238,7 @@
                 </div>
 
                 <button id="admin-trigger" class="px-4 h-9 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-[9px] font-black tracking-widest text-white hover:bg-white/10 transition-all uppercase">
-                    Panel
+                    Panel Staff
                 </button>
             </div>
         </div>
@@ -248,21 +249,21 @@
         <div class="max-w-7xl mx-auto px-6 text-center lg:text-left grid lg:grid-cols-2 gap-12 items-center">
             <div>
                 <h1 class="text-6xl md:text-[7.5rem] font-black leading-[0.85] uppercase italic tracking-tighter mb-12">
-                    CALIDAD <br><span class="accent-text">PREMIUM Y TOP.</span>
+                    CALIDAD <br><span class="accent-text">PREMIUM</span>
                 </h1>
                 
                 <div class="mb-12 max-w-md mx-auto lg:mx-0">
                     <p class="opacity-80 font-medium text-lg uppercase tracking-tight mb-8 leading-relaxed">
-                        Revendedores oficiales de calzado premium importado directamente desde Brasil. 
+                        Revendedores oficiales de calzado premium importado directamente desde Brasil 
                     </p>
                     
                     <div class="space-y-6 pt-4 border-t border-white/10">
                         <span class="accent-text font-black text-2xl block uppercase italic tracking-tighter">
-                            ENVÍOS A TODO EL PAÍS.
+                            ENVÍOS A TODO EL PAÍS
                         </span> 
                         
                         <p class="text-[12px] font-bold opacity-60 uppercase tracking-widest leading-loose">
-                            El costo del envío lo paga el cliente y es calculado automáticamente según la localidad y el transporte.
+                            El costo del envío lo paga el cliente y es calculado automáticamente según la localidad y el transporte
                         </p>
                     </div>
                 </div>
@@ -280,6 +281,7 @@
             <div class="relative group">
                 <div class="zoom-container shadow-2xl aspect-[4/5] bg-neutral-900" id="hero-slider-wrapper">
                     <div class="hero-slider-container" id="hero-slides-target">
+                        <!-- Cargado dinámicamente -->
                         <div class="hero-slide active">
                             <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000&auto=format&fit=crop" class="zoom-image" alt="Zapatillas">
                         </div>
@@ -340,7 +342,7 @@
                     <div class="p-10 bg-blue-500/5 rounded-[40px] border border-blue-500/10">
                         <p class="text-sm font-black uppercase italic accent-text mb-5">¿Cómo elegir?</p>
                         <p class="text-[13px] opacity-70 leading-loose uppercase mb-8 font-medium">
-                            En el catálogo verás los talles en formato **BR (Brasil)**. Para no equivocarte, simplemente pedí **un número menos** de lo que calzas habitualmente en Argentina.
+                            En el catálogo verás los talles en formato BR (Brasil). Para no equivocarte, simplemente pedí un número menos de lo que calzas habitualmente en Argentina.
                         </p>
                         <div class="flex items-center justify-between gap-6 bg-white/5 p-6 rounded-3xl border border-white/5">
                             <div class="text-center">
@@ -367,10 +369,10 @@
                 En <span class="accent-text font-black italic">PASOS URBANOS</span> nos dedicamos a traer lo mejor del calzado brasilero al mercado nacional. Nos enfocamos en la calidad, el estilo y la exclusividad, asegurándonos de que cada par que vendemos cumpla con los estándares más altos del mercado premium.
             </p>
             <div class="flex justify-center gap-6">
-                <a href="https://www.instagram.com/passos.urbanoss/" target="_blank" class="flex items-center gap-3 px-8 py-4 rounded-full bg-white/5 border border-white/10 font-black text-[11px] uppercase tracking-widest hover:bg-white/10 transition-all">
+                <a id="ig-link" href="#" target="_blank" class="flex items-center gap-3 px-8 py-4 rounded-full bg-white/5 border border-white/10 font-black text-[11px] uppercase tracking-widest hover:bg-white/10 transition-all">
                     <i class="fa-brands fa-instagram text-xl"></i> Instagram
                 </a>
-                <a href="https://wa.me/5491156474987" target="_blank" class="flex items-center gap-3 px-8 py-4 rounded-full bg-green-500/10 border border-green-500/20 font-black text-[11px] uppercase tracking-widest text-green-400 hover:bg-green-500/20 transition-all">
+                <a id="wa-link" href="#" target="_blank" class="flex items-center gap-3 px-8 py-4 rounded-full bg-green-500/10 border border-green-500/20 font-black text-[11px] uppercase tracking-widest text-green-400 hover:bg-green-500/20 transition-all">
                     <i class="fa-brands fa-whatsapp text-xl"></i> WhatsApp
                 </a>
             </div>
@@ -389,7 +391,7 @@
         </div>
     </footer>
 
-    <!-- MODAL COMPRA (CHECKOUT) -->
+    <!-- MODAL COMPRA -->
     <div id="checkout-panel" class="modal-container">
         <div id="checkout-content">
             <h2 id="checkout-name" class="text-2xl font-black uppercase italic mb-2">Modelo</h2>
@@ -489,17 +491,36 @@
         </div>
     </div>
 
-    <!-- BOTONES SOCIALES FLOTANTES -->
-    <a href="https://www.instagram.com/passos.urbanoss/" target="_blank" class="ig-float hover:scale-110 transition-transform shadow-2xl"><i class="fa-brands fa-instagram"></i></a>
-    <a href="https://wa.me/5491156474987" target="_blank" class="whatsapp-float hover:scale-110 transition-transform shadow-2xl"><i class="fa-brands fa-whatsapp"></i></a>
+    <!-- BOTONES SOCIALES -->
+    <a id="ig-float" href="#" target="_blank" class="ig-float hover:scale-110 transition-transform shadow-2xl"><i class="fa-brands fa-instagram"></i></a>
+    <a id="wa-float" href="#" target="_blank" class="whatsapp-float hover:scale-110 transition-transform shadow-2xl"><i class="fa-brands fa-whatsapp"></i></a>
     
 <script type="module">
+    // --- DATOS OFUSCADOS (PRIVADO) ---
+    // Codificados para que no sean legibles en el código fuente básico
+    const _D1 = "bGF1dHlvcnRpejk4Ny13cQ=="; // Owner
+    const _D2 = "b2ZpY2lhbHBhc29zdXJiYW5vcw=="; // Repo
+    const _D3 = "c3RvY2suanNvbg=="; // Path
+    const _D4 = "ZDRjZGU4M2Y2ZTQ5ZjYxZTk5NDA5MTAwMzRmNjcxY2Y="; // ImgBB
+    const _D5 = "NTQ5MTE1NjQ3NDk4Nw=="; // WhatsApp
+    const _D6 = "cGFzc29zLnVyYmFub3Nz"; // IG
+
+    const _decode = (v) => decodeURIComponent(atob(v).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+
     const CONFIG = {
-        OWNER: 'lautyortiz987-wq',
-        REPO: 'oficialpasosurbanos',
-        PATH: 'stock.json',
-        IMGBB_KEY: 'd4cde83f6e49f61e9940910034f671cf'
+        OWNER: _decode(_D1),
+        REPO: _decode(_D2),
+        PATH: _decode(_D3),
+        IMGBB_KEY: _decode(_D4),
+        WA_NUM: _decode(_D5),
+        IG_USER: _decode(_D6)
     };
+
+    // Aplicar links sociales dinámicamente
+    document.getElementById('ig-link').href = `https://instagram.com/${CONFIG.IG_USER}`;
+    document.getElementById('ig-float').href = `https://instagram.com/${CONFIG.IG_USER}`;
+    document.getElementById('wa-link').href = `https://wa.me/${CONFIG.WA_NUM}`;
+    document.getElementById('wa-float').href = `https://wa.me/${CONFIG.WA_NUM}`;
 
     const SHIPPING_RATES = {
         correo: { caba: 5500, buenos_aires: 6200, santa_fe: 7500, cordoba: 7500, mendoza: 8200, norte: 9500, sur: 10500, otros: 8500 },
@@ -517,60 +538,7 @@
         currentHeroIndex: 0
     };
 
-    window.deleteProduct = async (event, index) => {
-        event.stopPropagation(); 
-        const p = state.products[index];
-        if (!confirm(`¿Borrar "${p.name}"?`)) return;
-        const updatedProducts = state.products.filter((_, i) => i !== index);
-        if (await saveToGithub(updatedProducts)) {
-            state.products = updatedProducts; 
-            renderCatalog(); 
-            updateHeroCarousel();
-            UI.notify("Eliminado");
-        }
-    };
-
-    async function fetchStock() {
-        try {
-            const res = await fetch(`https://raw.githubusercontent.com/${CONFIG.OWNER}/${CONFIG.REPO}/main/${CONFIG.PATH}?nocache=${Date.now()}`);
-            if (res.ok) {
-                state.products = await res.json();
-                renderCatalog();
-                updateHeroCarousel();
-            }
-        } catch (e) { console.error(e); }
-    }
-    
-    async function saveToGithub(newData) {
-        const token = sessionStorage.getItem('gh_token'); 
-        if (!token) return false;
-        UI.notify("Guardando...");
-        try {
-            const fileRes = await fetch(`https://api.github.com/repos/${CONFIG.OWNER}/${CONFIG.REPO}/contents/${CONFIG.PATH}`, {
-                headers: { "Authorization": `token ${token}` }
-            });
-            const fileData = await fileRes.json();
-            const updateRes = await fetch(`https://api.github.com/repos/${CONFIG.OWNER}/${CONFIG.REPO}/contents/${CONFIG.PATH}`, {
-                method: "PUT",
-                headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    message: "Update stock",
-                    content: btoa(unescape(encodeURIComponent(JSON.stringify(newData, null, 2)))),
-                    sha: fileData.sha
-                })
-            });
-            return updateRes.ok;
-        } catch (e) { return false; }
-    }
-
-    async function uploadImage(file) {
-        const formData = new FormData();
-        formData.append('image', file);
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${CONFIG.IMGBB_KEY}`, { method: 'POST', body: formData });
-        const data = await res.json();
-        return data.success ? data.data.url : null;
-    }
-
+    // Funciones de utilidad y UI
     window.UI = {
         openModal: (id) => {
             document.getElementById('modal-overlay').classList.add('active');
@@ -637,19 +605,85 @@
         }
     };
 
-    document.getElementById('shipping-province').onchange = (e) => {
-        state.selectedProvince = e.target.value;
-        UI.calculateShipping();
+    // Gestión de Datos
+    async function fetchStock() {
+        try {
+            const res = await fetch(`https://raw.githubusercontent.com/${CONFIG.OWNER}/${CONFIG.REPO}/main/${CONFIG.PATH}?nocache=${Date.now()}`);
+            if (res.ok) {
+                state.products = await res.json();
+                renderCatalog();
+                updateHeroCarousel();
+            }
+        } catch (e) {}
+    }
+
+    async function saveToGithub(newData) {
+        const token = sessionStorage.getItem('gh_token'); 
+        if (!token) return false;
+        UI.notify("Guardando...");
+        try {
+            const fileRes = await fetch(`https://api.github.com/repos/${CONFIG.OWNER}/${CONFIG.REPO}/contents/${CONFIG.PATH}`, {
+                headers: { "Authorization": `token ${token}` }
+            });
+            const fileData = await fileRes.json();
+            const updateRes = await fetch(`https://api.github.com/repos/${CONFIG.OWNER}/${CONFIG.REPO}/contents/${CONFIG.PATH}`, {
+                method: "PUT",
+                headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: "sys-upd",
+                    content: btoa(unescape(encodeURIComponent(JSON.stringify(newData, null, 2)))),
+                    sha: fileData.sha
+                })
+            });
+            return updateRes.ok;
+        } catch (e) { return false; }
+    }
+
+    async function uploadImage(file) {
+        const formData = new FormData();
+        formData.append('image', file);
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${CONFIG.IMGBB_KEY}`, { method: 'POST', body: formData });
+        const data = await res.json();
+        return data.success ? data.data.url : null;
+    }
+
+    window.deleteProduct = async (event, index) => {
+        event.stopPropagation();
+        const p = state.products[index];
+        if (!confirm(`¿Borrar "${p.name}"?`)) return;
+        const updatedProducts = state.products.filter((_, i) => i !== index);
+        if (await saveToGithub(updatedProducts)) {
+            state.products = updatedProducts; 
+            renderCatalog(); 
+            updateHeroCarousel();
+            UI.notify("Eliminado");
+        }
     };
 
-    document.querySelectorAll('.shipping-method').forEach(btn => {
-        btn.onclick = () => {
-            document.querySelectorAll('.shipping-method').forEach(m => m.classList.remove('selected'));
-            btn.classList.add('selected');
-            state.selectedMethod = btn.dataset.method;
-            UI.calculateShipping();
-        };
-    });
+    function renderCatalog() {
+        const grid = document.getElementById('product-grid');
+        const isStaff = sessionStorage.getItem('gh_token') !== null;
+        if (state.products.length === 0) {
+            grid.innerHTML = `<div class="col-span-full py-20 text-center opacity-30 font-bold uppercase tracking-widest">Sin stock cargado</div>`;
+            return;
+        }
+        grid.innerHTML = state.products.map((p, i) => `
+            <div class="glass-card p-8 group relative cursor-pointer hover:shadow-2xl">
+                ${isStaff ? `<button onclick="deleteProduct(event, ${i})" class="absolute top-6 right-6 z-10 bg-red-500/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg"><i class="fa-solid fa-trash text-white text-xs"></i></button>` : ''}
+                <div onclick="UI.openCheckout(${i})">
+                    <div class="zoom-container aspect-[4/5] mb-8" id="zoom-${i}"><img src="${p.img}" class="zoom-image"></div>
+                    <div class="flex justify-between items-end">
+                        <div class="space-y-2">
+                            <h3 class="text-xl font-black italic uppercase leading-tight">${p.name}</h3>
+                            <p class="accent-text font-black text-2xl tracking-tight">$${Number(p.price).toLocaleString()}</p>
+                        </div>
+                        <div class="bg-white/5 border border-white/5 px-3 py-1.5 rounded-xl text-[9px] font-black opacity-40 italic">BRASIL</div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        state.products.forEach((_, i) => UI.initZoom(document.getElementById(`zoom-${i}`)));
+    }
 
     function updateHeroCarousel() {
         const container = document.getElementById('hero-slides-target');
@@ -659,7 +693,7 @@
 
         container.innerHTML = recentItems.map((p, i) => `
             <div class="hero-slide ${i === 0 ? 'active' : ''}">
-                <img src="${p.img}" class="zoom-image" alt="${p.name}">
+                <img src="${p.img}" class="zoom-image" alt="Destacado">
             </div>
         `).join('');
 
@@ -686,9 +720,24 @@
         UI.initZoom(document.getElementById('hero-slider-wrapper'));
     }
 
+    // Event Listeners
     document.getElementById('theme-switch').onclick = UI.toggleTheme;
     document.getElementById('admin-trigger').onclick = () => UI.openModal('admin-panel');
     document.getElementById('modal-overlay').onclick = UI.close;
+    
+    document.getElementById('shipping-province').onchange = (e) => {
+        state.selectedProvince = e.target.value;
+        UI.calculateShipping();
+    };
+
+    document.querySelectorAll('.shipping-method').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('.shipping-method').forEach(m => m.classList.remove('selected'));
+            btn.classList.add('selected');
+            state.selectedMethod = btn.dataset.method;
+            UI.calculateShipping();
+        };
+    });
 
     document.getElementById('admin-login-btn').onclick = () => {
         const inputToken = document.getElementById('admin-password-input').value.trim();
@@ -696,10 +745,10 @@
             sessionStorage.setItem('gh_token', inputToken); 
             document.getElementById('login-view').classList.add('hidden');
             document.getElementById('dashboard-view').classList.remove('hidden');
-            UI.notify('Conectado');
+            UI.notify('Acceso Staff');
             renderCatalog();
         } else {
-            UI.notify('Token Inválido');
+            UI.notify('Error de acceso');
         }
     };
 
@@ -716,55 +765,31 @@
         const price = document.getElementById('p-price').value;
         const fileInput = document.getElementById('p-img-file');
         const sizes = Array.from(document.querySelectorAll('#size-selector .size-badge.selected')).map(s => s.dataset.size);
-        if(!name || !price || !fileInput.files[0] || sizes.length === 0) return UI.notify('Datos incompletos');
-        UI.notify("Subiendo...");
+        if(!name || !price || !fileInput.files[0] || sizes.length === 0) return UI.notify('Incompleto');
+        UI.notify("Publicando...");
         const imgUrl = await uploadImage(fileInput.files[0]);
-        if(!imgUrl) return;
+        if(!imgUrl) return UI.notify("Error de imagen");
         const updatedProducts = [...state.products, { name, price, img: imgUrl, sizes }];
         if(await saveToGithub(updatedProducts)) {
             state.products = updatedProducts;
             renderCatalog();
             updateHeroCarousel();
             UI.close();
-            UI.notify("Publicado con éxito");
+            UI.notify("Publicado");
         }
     };
 
     document.getElementById('whatsapp-order-btn').onclick = () => {
         if(!state.selectedSize) return UI.notify('Elegí talle');
-        let ship = "Envío: A coordinar (A cargo del cliente)";
+        let ship = "Envío: A coordinar";
         if (state.selectedProvince && state.selectedMethod) {
-            ship = `Envío: ${state.selectedMethod.toUpperCase()}\nProvincia: ${state.selectedProvince.replace('_', ' ').toUpperCase()}\nCosto estimado: $${state.shippingCost.toLocaleString()} (Paga el cliente)`;
+            ship = `Envío: ${state.selectedMethod.toUpperCase()}\nProvincia: ${state.selectedProvince.replace('_', ' ').toUpperCase()}\nCosto estimado: $${state.shippingCost.toLocaleString()}`;
         }
         const msg = `Hola! Quiero: *${state.selectedProduct.name}*\nTalle: *${state.selectedSize} BR*\nPrecio: $${Number(state.selectedProduct.price).toLocaleString()}\n\n${ship}`;
-        window.open(`https://wa.me/5491156474987?text=${encodeURIComponent(msg)}`, '_blank');
+        window.open(`https://wa.me/${CONFIG.WA_NUM}?text=${encodeURIComponent(msg)}`, '_blank');
     };
 
-    function renderCatalog() {
-        const grid = document.getElementById('product-grid');
-        const isStaff = sessionStorage.getItem('gh_token') !== null;
-        if (state.products.length === 0) {
-            grid.innerHTML = `<div class="col-span-full py-20 text-center opacity-30 font-bold uppercase tracking-[0.3em]">Sin stock cargado</div>`;
-            return;
-        }
-        grid.innerHTML = state.products.map((p, i) => `
-            <div class="glass-card p-8 group relative cursor-pointer hover:shadow-2xl">
-                ${isStaff ? `<button onclick="deleteProduct(event, ${i})" class="absolute top-6 right-6 z-10 bg-red-500/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg"><i class="fa-solid fa-trash text-white text-xs"></i></button>` : ''}
-                <div onclick="UI.openCheckout(${i})">
-                    <div class="zoom-container aspect-[4/5] mb-8" id="zoom-${i}"><img src="${p.img}" class="zoom-image"></div>
-                    <div class="flex justify-between items-end">
-                        <div class="space-y-2">
-                            <h3 class="text-xl font-black italic uppercase leading-tight">${p.name}</h3>
-                            <p class="accent-text font-black text-2xl tracking-tight">$${Number(p.price).toLocaleString()}</p>
-                        </div>
-                        <div class="bg-white/5 border border-white/5 px-3 py-1.5 rounded-xl text-[9px] font-black opacity-40 italic">BRASIL</div>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-        state.products.forEach((_, i) => UI.initZoom(document.getElementById(`zoom-${i}`)));
-    }
-
+    // Fondo Animado
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
