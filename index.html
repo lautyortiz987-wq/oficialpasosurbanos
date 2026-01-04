@@ -80,6 +80,35 @@
             will-change: transform; transform-origin: center;
         }
 
+        /* --- NUEVOS ESTILOS GALERÍA PRODUCTO --- */
+        .product-gallery { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 35px; }
+        .gallery-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
+        .gallery-slide.active { opacity: 1; pointer-events: auto; }
+        .gallery-nav {
+            position: absolute; top: 50%; width: 100%; transform: translateY(-50%);
+            display: flex; justify-content: space-between; padding: 0 10px; z-index: 10;
+            pointer-events: none;
+        }
+        .gallery-btn {
+            width: 35px; height: 35px; background: rgba(0,0,0,0.5); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: white;
+            backdrop-filter: blur(5px); pointer-events: auto; cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.1); transition: all 0.2s;
+        }
+        .gallery-btn:hover { background: var(--brand-color); transform: scale(1.1); }
+        .thumbs-container {
+            display: flex; gap: 8px; margin-top: 12px; overflow-x: auto; padding-bottom: 8px;
+            scrollbar-width: none; /* Firefox */
+        }
+        .thumbs-container::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+        .thumb {
+            width: 50px; height: 50px; border-radius: 12px; object-fit: cover;
+            cursor: pointer; opacity: 0.4; border: 2px solid transparent; transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .thumb.active { opacity: 1; border-color: var(--brand-color); }
+        /* -------------------------------------- */
+
         .hero-slider-container {
             position: relative;
             width: 100%;
@@ -281,7 +310,6 @@
             <div class="relative group">
                 <div class="zoom-container shadow-2xl aspect-[4/5] bg-neutral-900" id="hero-slider-wrapper">
                     <div class="hero-slider-container" id="hero-slides-target">
-                        <!-- Cargado dinámicamente -->
                         <div class="hero-slide active">
                             <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000&auto=format&fit=crop" class="zoom-image" alt="Zapatillas">
                         </div>
@@ -298,9 +326,11 @@
     <!-- CATALOGO -->
     <main id="catalogo" class="py-32">
         <div class="max-w-7xl mx-auto px-6">
-            <h2 class="text-5xl font-black italic uppercase tracking-tighter mb-20">
-                STOCK<br><span class="accent-text">DISPONIBLE</span>
-            </h2>
+            <div class="flex justify-between items-end mb-20">
+                <h2 class="text-5xl font-black italic uppercase tracking-tighter">
+                    STOCK<br><span class="accent-text">DISPONIBLE</span>
+                </h2>
+            </div>
             <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
                 <div class="col-span-full py-20 text-center opacity-30 font-bold uppercase tracking-widest">
                     <i class="fa-solid fa-spinner fa-spin text-4xl mb-4 block"></i>
@@ -310,7 +340,7 @@
         </div>
     </main>
 
-    <!-- SECCIÓN TALLES -->
+    <!-- GUÍA DE TALLES -->
     <section id="talles-info" class="py-32 border-y border-white/5 bg-white/5">
         <div class="max-w-5xl mx-auto px-6">
             <div class="text-center mb-20">
@@ -361,7 +391,7 @@
         </div>
     </section>
 
-    <!-- SECCIÓN NOSOTROS -->
+    <!-- NOSOTROS -->
     <section id="nosotros" class="py-32">
         <div class="max-w-4xl mx-auto px-6 text-center">
             <h2 class="text-5xl font-black italic uppercase mb-10 tracking-tighter">SOBRE <span class="accent-text">NOSOTROS</span></h2>
@@ -437,7 +467,7 @@
         </div>
     </div>
 
-    <!-- MODAL STAFF -->
+    <!-- PANEL STAFF -->
     <div id="admin-panel" class="modal-container">
         <div id="login-view">
             <h2 class="text-xl font-black uppercase mb-8 italic text-center">Acceso Staff</h2>
@@ -467,8 +497,8 @@
                     </div>
                 </div>
 
-                <span class="calc-label">Imagen del producto</span>
-                <input type="file" id="p-img-file" accept="image/*" class="admin-input !bg-zinc-900 !border-zinc-800" style="color:white; padding:12px;">
+                <span class="calc-label">Imágenes (Selecciona una o varias)</span>
+                <input type="file" id="p-img-file" accept="image/*" multiple class="admin-input !bg-zinc-900 !border-zinc-800" style="color:white; padding:12px;">
                 
                 <span class="calc-label">Talles disponibles (BR)</span>
                 <div class="grid grid-cols-5 gap-2 mb-8" id="size-selector">
@@ -496,14 +526,12 @@
     <a id="wa-float" href="#" target="_blank" class="whatsapp-float hover:scale-110 transition-transform shadow-2xl"><i class="fa-brands fa-whatsapp"></i></a>
     
 <script type="module">
-    // --- DATOS OFUSCADOS (PRIVADO) ---
-    // Codificados para que no sean legibles en el código fuente básico
-    const _D1 = "bGF1dHlvcnRpejk4Ny13cQ=="; // Owner
-    const _D2 = "b2ZpY2lhbHBhc29zdXJiYW5vcw=="; // Repo
-    const _D3 = "c3RvY2suanNvbg=="; // Path
-    const _D4 = "ZDRjZGU4M2Y2ZTQ5ZjYxZTk5NDA5MTAwMzRmNjcxY2Y="; // ImgBB
-    const _D5 = "NTQ5MTE1NjQ3NDk4Nw=="; // WhatsApp
-    const _D6 = "cGFzc29zLnVyYmFub3Nz"; // IG
+    const _D1 = "bGF1dHlvcnRpejk4Ny13cQ==";
+    const _D2 = "b2ZpY2lhbHBhc29zdXJiYW5vcw==";
+    const _D3 = "c3RvY2suanNvbg==";
+    const _D4 = "ZDRjZGU4M2Y2ZTQ5ZjYxZTk5NDA5MTAwMzRmNjcxY2Y=";
+    const _D5 = "NTQ5MTE1NjQ3NDk4Nw==";
+    const _D6 = "cGFzc29zLnVyYmFub3Nz";
 
     const _decode = (v) => decodeURIComponent(atob(v).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
 
@@ -516,7 +544,7 @@
         IG_USER: _decode(_D6)
     };
 
-    // Aplicar links sociales dinámicamente
+    // Social Setup
     document.getElementById('ig-link').href = `https://instagram.com/${CONFIG.IG_USER}`;
     document.getElementById('ig-float').href = `https://instagram.com/${CONFIG.IG_USER}`;
     document.getElementById('wa-link').href = `https://wa.me/${CONFIG.WA_NUM}`;
@@ -528,17 +556,20 @@
     };
     
     const state = { 
-        products: [],
-        selectedProduct: null,
-        selectedSize: null,
-        selectedProvince: null,
-        selectedMethod: null,
-        shippingCost: 0,
-        isLightMode: false,
-        currentHeroIndex: 0
-    };
+    products: [],
+    selectedProduct: null,
+    selectedSize: null,
+    selectedProvince: null,
+    selectedMethod: null,
+    shippingCost: 0,
+    isLightMode: false,
+    currentHeroIndex: 0,
+    productGalleryStates: {},
 
-    // Funciones de utilidad y UI
+    // CATÁLOGO
+    catalogLimit: 4,
+    catalogExpanded: false
+};
     window.UI = {
         openModal: (id) => {
             document.getElementById('modal-overlay').classList.add('active');
@@ -556,17 +587,43 @@
             state.isLightMode = !state.isLightMode;
             document.body.classList.toggle('light-mode', state.isLightMode);
         },
+        // Nueva función para cambiar de imagen en la tarjeta del catálogo
+        changeGalleryImage: (pIndex, newImgIndex) => {
+            const product = state.products[pIndex];
+            const images = Array.isArray(product.img) ? product.img : [product.img];
+            
+            // Ciclar índice
+            if (newImgIndex >= images.length) newImgIndex = 0;
+            if (newImgIndex < 0) newImgIndex = images.length - 1;
+            
+            state.productGalleryStates[pIndex] = newImgIndex;
+            
+            // Actualizar DOM de la tarjeta específica
+            const card = document.querySelector(`[data-p-index="${pIndex}"]`);
+            if (!card) return;
+            
+            const slides = card.querySelectorAll('.gallery-slide');
+            const thumbs = card.querySelectorAll('.thumb');
+            
+            slides.forEach((s, i) => s.classList.toggle('active', i === newImgIndex));
+            thumbs.forEach((t, i) => t.classList.toggle('active', i === newImgIndex));
+            
+            // Reiniciar zoom para la nueva imagen activa
+            UI.initZoom(card.querySelector('.zoom-container'));
+        },
         initZoom: (container) => {
             if(!container) return;
-            const img = container.querySelector('img');
+            const activeSlide = container.querySelector('.gallery-slide.active img') || container.querySelector('img');
+            if(!activeSlide) return;
+
             container.onmousemove = (e) => {
                 const rect = container.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-                img.style.transformOrigin = `${x}px ${y}px`;
-                img.style.transform = "scale(2.2)";
+                activeSlide.style.transformOrigin = `${x}px ${y}px`;
+                activeSlide.style.transform = "scale(2.2)";
             };
-            container.onmouseleave = () => img.style.transform = "scale(1)";
+            container.onmouseleave = () => activeSlide.style.transform = "scale(1)";
         },
         calculateShipping: () => {
             if (state.selectedProvince && state.selectedMethod) {
@@ -605,7 +662,7 @@
         }
     };
 
-    // Gestión de Datos
+    // GitHub Sync
     async function fetchStock() {
         try {
             const res = await fetch(`https://raw.githubusercontent.com/${CONFIG.OWNER}/${CONFIG.REPO}/main/${CONFIG.PATH}?nocache=${Date.now()}`);
@@ -660,65 +717,137 @@
         }
     };
 
-    function renderCatalog() {
-        const grid = document.getElementById('product-grid');
-        const isStaff = sessionStorage.getItem('gh_token') !== null;
-        if (state.products.length === 0) {
-            grid.innerHTML = `<div class="col-span-full py-20 text-center opacity-30 font-bold uppercase tracking-widest">Sin stock cargado</div>`;
-            return;
-        }
-        grid.innerHTML = state.products.map((p, i) => `
-            <div class="glass-card p-8 group relative cursor-pointer hover:shadow-2xl">
-                ${isStaff ? `<button onclick="deleteProduct(event, ${i})" class="absolute top-6 right-6 z-10 bg-red-500/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg"><i class="fa-solid fa-trash text-white text-xs"></i></button>` : ''}
-                <div onclick="UI.openCheckout(${i})">
-                    <div class="zoom-container aspect-[4/5] mb-8" id="zoom-${i}"><img src="${p.img}" class="zoom-image"></div>
-                    <div class="flex justify-between items-end">
-                        <div class="space-y-2">
-                            <h3 class="text-xl font-black italic uppercase leading-tight">${p.name}</h3>
-                            <p class="accent-text font-black text-2xl tracking-tight">$${Number(p.price).toLocaleString()}</p>
+    function updateHeroCarousel() {
+    const container = document.getElementById('hero-slides-target');
+    const dots = document.getElementById('hero-dots');
+    if (!container || !dots) return;
+
+    const recentItems = [...state.products].reverse().slice(0, 3);
+    if (recentItems.length === 0) return;
+
+    container.innerHTML = recentItems.map((p, i) => {
+        const imgUrl = Array.isArray(p.img) ? p.img[0] : p.img;
+        return `
+            <div class="hero-slide ${i === 0 ? 'active' : ''}">
+                <img src="${imgUrl}" class="zoom-image" alt="Destacado">
+            </div>
+        `;
+    }).join('');
+
+    dots.innerHTML = recentItems.map((_, i) => `
+        <div class="dot h-1 rounded-full transition-all duration-300
+            ${i === 0 ? 'w-8 bg-blue-500' : 'w-4 bg-white/20'}">
+        </div>
+    `).join('');
+
+    clearInterval(window.heroInterval);
+    state.currentHeroIndex = 0;
+
+    if (recentItems.length > 1) {
+        window.heroInterval = setInterval(() => {
+            const slides = document.querySelectorAll('.hero-slide');
+            const dotEls = document.querySelectorAll('.dot');
+            if (!slides.length) return;
+
+            slides[state.currentHeroIndex].classList.remove('active');
+            dotEls[state.currentHeroIndex].classList.replace('w-8', 'w-4');
+            dotEls[state.currentHeroIndex].classList.replace('bg-blue-500', 'bg-white/20');
+
+            state.currentHeroIndex = (state.currentHeroIndex + 1) % recentItems.length;
+
+            slides[state.currentHeroIndex].classList.add('active');
+            dotEls[state.currentHeroIndex].classList.replace('w-4', 'w-8');
+            dotEls[state.currentHeroIndex].classList.replace('bg-white/20', 'bg-blue-500');
+        }, 5000);
+    }
+}
+
+function renderCatalog() {
+    const grid = document.getElementById('product-grid');
+    const isStaff = sessionStorage.getItem('gh_token') !== null;
+
+    if (state.products.length === 0) {
+        grid.innerHTML = `
+            <div class="col-span-full py-20 text-center opacity-30 font-bold uppercase tracking-widest">
+                Sin stock cargado
+            </div>`;
+        return;
+    }
+
+    const productsWithIndex = state.products.map((p, index) => ({
+        ...p,
+        __index: index
+    }));
+
+    const visibleProducts = state.catalogExpanded
+        ? productsWithIndex
+        : productsWithIndex.slice(0, state.catalogLimit);
+
+    grid.innerHTML = visibleProducts.map(p => {
+        const i = p.__index;
+        const images = Array.isArray(p.img) ? p.img : [p.img];
+        state.productGalleryStates[i] = 0;
+
+        return `
+        <div class="glass-card p-8 group relative" data-p-index="${i}">
+            ${isStaff ? `
+                <button onclick="deleteProduct(event, ${i})"
+                    class="absolute top-6 right-6 z-30 bg-red-500/80 w-10 h-10 rounded-full
+                           flex items-center justify-center hover:bg-red-600 transition">
+                    <i class="fa-solid fa-trash text-white text-xs"></i>
+                </button>` : ''}
+
+            <div class="zoom-container aspect-[4/5] mb-4 relative" id="zoom-p-${i}">
+                <div class="product-gallery">
+                    ${images.map((url, idx) => `
+                        <div class="gallery-slide ${idx === 0 ? 'active' : ''}">
+                            <img src="${url}" class="zoom-image">
                         </div>
-                        <div class="bg-white/5 border border-white/5 px-3 py-1.5 rounded-xl text-[9px] font-black opacity-40 italic">BRASIL</div>
+                    `).join('')}
+                </div>
+            </div>
+
+            <div class="mt-4 cursor-pointer" onclick="UI.openCheckout(${i})">
+                <div class="flex justify-between items-end">
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-black italic uppercase leading-tight">${p.name}</h3>
+                        <p class="accent-text font-black text-2xl tracking-tight">
+                            $${Number(p.price).toLocaleString()}
+                        </p>
+                    </div>
+                    <div class="bg-white/5 border border-white/5 px-3 py-1.5 rounded-xl
+                                text-[9px] font-black opacity-40 italic">
+                        BRASIL
                     </div>
                 </div>
             </div>
-        `).join('');
-        state.products.forEach((_, i) => UI.initZoom(document.getElementById(`zoom-${i}`)));
+        </div>`;
+    }).join('');
+
+    // BOTÓN VER MÁS / VER MENOS
+    if (state.products.length > state.catalogLimit) {
+        grid.innerHTML += `
+            <div class="col-span-full flex justify-center mt-16">
+                <button id="catalog-toggle-btn"
+                    class="px-14 py-5 rounded-full bg-white/5 border border-white/10
+                           text-[11px] font-black uppercase tracking-widest
+                           hover:bg-white/10 transition">
+                    ${state.catalogExpanded ? 'Ver menos' : 'Ver más'}
+                </button>
+            </div>`;
     }
 
-    function updateHeroCarousel() {
-        const container = document.getElementById('hero-slides-target');
-        const dots = document.getElementById('hero-dots');
-        const recentItems = [...state.products].reverse().slice(0, 3);
-        if (recentItems.length === 0) return;
+    document.getElementById('catalog-toggle-btn')?.addEventListener('click', () => {
+        state.catalogExpanded = !state.catalogExpanded;
+        renderCatalog();
+        document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' });
+    });
 
-        container.innerHTML = recentItems.map((p, i) => `
-            <div class="hero-slide ${i === 0 ? 'active' : ''}">
-                <img src="${p.img}" class="zoom-image" alt="Destacado">
-            </div>
-        `).join('');
+    visibleProducts.forEach(p =>
+        UI.initZoom(document.getElementById(`zoom-p-${p.__index}`))
+    );
+}
 
-        dots.innerHTML = recentItems.map((_, i) => `
-            <div class="dot h-1 rounded-full transition-all duration-300 ${i === 0 ? 'w-8 bg-blue-500' : 'w-4 bg-white/20'}"></div>
-        `).join('');
-
-        clearInterval(window.heroInterval);
-        state.currentHeroIndex = 0;
-        if (recentItems.length > 1) {
-            window.heroInterval = setInterval(() => {
-                const slides = document.querySelectorAll('.hero-slide');
-                const dotEls = document.querySelectorAll('.dot');
-                if (!slides.length) return;
-                slides[state.currentHeroIndex].classList.remove('active');
-                dotEls[state.currentHeroIndex].classList.replace('w-8', 'w-4');
-                dotEls[state.currentHeroIndex].classList.replace('bg-blue-500', 'bg-white/20');
-                state.currentHeroIndex = (state.currentHeroIndex + 1) % recentItems.length;
-                slides[state.currentHeroIndex].classList.add('active');
-                dotEls[state.currentHeroIndex].classList.replace('w-4', 'w-8');
-                dotEls[state.currentHeroIndex].classList.replace('bg-white/20', 'bg-blue-500');
-            }, 5000);
-        }
-        UI.initZoom(document.getElementById('hero-slider-wrapper'));
-    }
 
     // Event Listeners
     document.getElementById('theme-switch').onclick = UI.toggleTheme;
@@ -765,11 +894,21 @@
         const price = document.getElementById('p-price').value;
         const fileInput = document.getElementById('p-img-file');
         const sizes = Array.from(document.querySelectorAll('#size-selector .size-badge.selected')).map(s => s.dataset.size);
-        if(!name || !price || !fileInput.files[0] || sizes.length === 0) return UI.notify('Incompleto');
-        UI.notify("Publicando...");
-        const imgUrl = await uploadImage(fileInput.files[0]);
-        if(!imgUrl) return UI.notify("Error de imagen");
-        const updatedProducts = [...state.products, { name, price, img: imgUrl, sizes }];
+        
+        if(!name || !price || fileInput.files.length === 0 || sizes.length === 0) return UI.notify('Incompleto');
+        
+        UI.notify("Subiendo imágenes...");
+        const imgUrls = [];
+        
+        // Subir cada imagen seleccionada
+        for (let i = 0; i < fileInput.files.length; i++) {
+            const url = await uploadImage(fileInput.files[i]);
+            if(url) imgUrls.push(url);
+        }
+
+        if(imgUrls.length === 0) return UI.notify("Error en imágenes");
+        
+        const updatedProducts = [...state.products, { name, price, img: imgUrls, sizes }];
         if(await saveToGithub(updatedProducts)) {
             state.products = updatedProducts;
             renderCatalog();
