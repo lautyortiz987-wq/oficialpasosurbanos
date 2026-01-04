@@ -1,1 +1,15 @@
-[]
+[
+  {
+    "name": "asd",
+    "price": "444444",
+    "img": [
+      "https://i.ibb.co/qMK0FBNZ/db63074b-3368-403d-acdb-8315d9df4c4f.png",
+      "https://i.ibb.co/bgxvwLPF/0d2a77ac-2708-4f70-90a8-e2ca1baf0ba8.png"
+    ],
+    "sizes": [
+      "36",
+      "37",
+      "38"
+    ]
+  }
+]
