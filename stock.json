@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "name": "Ajj",
+    "price": "44444",
+    "img": [
+      "https://i.ibb.co/DHQshQ5v/IMG-20251220-WA0125.jpg"
+    ],
+    "sizes": [
+      "36",
+      "37",
+      "38"
+    ]
+  }
+]
